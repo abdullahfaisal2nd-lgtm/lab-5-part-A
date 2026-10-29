@@ -1,0 +1,209 @@
+#ifndef LAB05_PART_A_LIST_H
+#define LAB05_PART_A_LIST_H
+
+/*
+    Name: M.Haroon-Ur-Rasheed Khan
+    Reg. No: Ai-9
+    Subject: DSA
+    Section: A
+    Lab 05 Part A: General Singly Linked List
+*/
+
+#include <iostream>
+#include <string>
+#include <utility>
+
+using namespace std;
+
+struct BookNode
+{
+    int id;
+    string title;
+    BookNode* next;
+
+    BookNode(int bookID, const string& bookTitle)
+        : id(bookID), title(bookTitle), next(nullptr) {}
+};
+
+class LinkedList
+{
+private:
+    BookNode* head;
+    int count;
+
+    BookNode* getNodeAt(int index) const
+    {
+        BookNode* current = head;
+        for (int i = 0; current != nullptr && i < index; i++)
+            current = current->next;
+        return current;
+    }
+
+    void clear()
+    {
+        while (head != nullptr)
+            delete Remove();
+        count = 0;
+    }
+
+    void copyFrom(const LinkedList& other)
+    {
+        for (BookNode* current = other.head; current != nullptr;
+             current = current->next)
+        {
+            InsertAt(new BookNode(current->id, current->title), count);
+        }
+    }
+
+public:
+    LinkedList() : head(nullptr), count(0) {}
+
+    LinkedList(const LinkedList& other) : head(nullptr), count(0)
+    {
+        copyFrom(other);
+    }
+
+    LinkedList& operator=(const LinkedList& other)
+    {
+        if (this != &other)
+        {
+            clear();
+            copyFrom(other);
+        }
+        return *this;
+    }
+
+    ~LinkedList()
+    {
+        clear();
+    }
+
+    void Insert(BookNode* book)
+    {
+        if (book == nullptr)
+            return;
+
+        book->next = head;
+        head = book;
+        count++;
+    }
+
+    BookNode* Remove()
+    {
+        if (IsEmpty())
+            return nullptr;
+
+        BookNode* removed = head;
+        head = head->next;
+        removed->next = nullptr;
+        count--;
+        return removed;
+    }
+
+    bool IsEmpty() const { return head == nullptr; }
+    bool IsNotEmpty() const { return head != nullptr; }
+
+    void InsertAt(BookNode* book, int index)
+    {
+        if (book == nullptr)
+            return;
+
+        if (index <= 0)
+        {
+            Insert(book);
+            return;
+        }
+
+        if (index > count)
+            index = count;
+
+        BookNode* previous = getNodeAt(index - 1);
+        book->next = previous->next;
+        previous->next = book;
+        count++;
+    }
+
+    BookNode* RemoveAt(int index)
+    {
+        if (IsEmpty())
+            return nullptr;
+
+        if (index <= 0)
+            return Remove();
+
+        if (index >= count)
+            index = count - 1;
+
+        BookNode* previous = getNodeAt(index - 1);
+        BookNode* removed = previous->next;
+        previous->next = removed->next;
+        removed->next = nullptr;
+        count--;
+        return removed;
+    }
+
+    void Swap(int firstIndex, int secondIndex)
+    {
+        if (firstIndex < 0 || secondIndex < 0 ||
+            firstIndex >= count || secondIndex >= count ||
+            firstIndex == secondIndex)
+            return;
+
+        BookNode* first = getNodeAt(firstIndex);
+        BookNode* second = getNodeAt(secondIndex);
+        swap(first->id, second->id);
+        swap(first->title, second->title);
+    }
+
+    void Sort()
+    {
+        for (BookNode* first = head; first != nullptr; first = first->next)
+        {
+            for (BookNode* second = first->next; second != nullptr;
+                 second = second->next)
+            {
+                if (first->id > second->id)
+                {
+                    swap(first->id, second->id);
+                    swap(first->title, second->title);
+                }
+            }
+        }
+    }
+
+    void Reverse()
+    {
+        BookNode* previous = nullptr;
+        BookNode* current = head;
+
+        while (current != nullptr)
+        {
+            BookNode* next = current->next;
+            current->next = previous;
+            previous = current;
+            current = next;
+        }
+
+        head = previous;
+    }
+
+    void Print() const
+    {
+        if (IsEmpty())
+        {
+            cout << "Collection is empty.\n";
+            return;
+        }
+
+        int index = 0;
+        for (BookNode* current = head; current != nullptr;
+             current = current->next)
+        {
+            cout << index++ << " | " << current->id
+                 << " | " << current->title << '\n';
+        }
+        cout << "Total books: " << count << '\n';
+    }
+};
+
+#endif
