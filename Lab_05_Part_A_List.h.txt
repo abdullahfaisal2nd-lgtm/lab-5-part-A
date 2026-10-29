@@ -2,8 +2,8 @@
 #define LAB05_PART_A_LIST_H
 
 /*
-    Name: M.Haroon-Ur-Rasheed Khan
-    Reg. No: Ai-9
+    Name: M.Abdullah Faisal
+    Reg. No: Ai-23
     Subject: DSA
     Section: A
     Lab 05 Part A: General Singly Linked List
